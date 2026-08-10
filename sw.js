@@ -1,4 +1,4 @@
-const CACHE = 'cerdic-pro-v1';
+const CACHE = 'cedric-pro-v2';
 const ASSETS = ['./', './index.html', './app.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', event => {
