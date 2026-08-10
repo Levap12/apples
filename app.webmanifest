@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "CERDIC PRO",
-  "short_name": "CERDIC PRO",
+  "name": "CEDRIC PRO",
+  "short_name": "CEDRIC PRO",
   "description": "Apples game simulator",
   "start_url": "./",
   "scope": "./",
