@@ -15,7 +15,7 @@
     .app{width:min(100%,520px);margin:auto;position:relative;border:1px solid #1f7653;background:linear-gradient(180deg,#071710f2,#020806f7);box-shadow:0 0 0 1px #06100c,0 0 40px #00ff7733,inset 0 0 30px #00ff7712;overflow:hidden;clip-path:polygon(13px 0,100% 0,100% calc(100% - 13px),calc(100% - 13px) 100%,0 100%,0 13px)}
     .app:before{content:"";position:absolute;inset:0;pointer-events:none;z-index:10;background:repeating-linear-gradient(0deg,transparent 0 3px,#8affbd07 4px);mix-blend-mode:screen}
     .top{position:relative;padding:16px 16px 12px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,#06100d,#0a251a 50%,#06100d)}
-    .eyebrow{color:var(--green);font-size:10px;letter-spacing:.23em;text-transform:uppercase;margin-bottom:5px}.title{margin:0;font-size:clamp(22px,6vw,34px);letter-spacing:.12em;font-weight:700;text-shadow:0 0 14px #39ff8888}.title span{color:var(--cyan)}
+    .title{margin:0;font-size:clamp(22px,6vw,34px);letter-spacing:.12em;font-weight:700;text-shadow:0 0 14px #39ff8888}.title span{color:var(--cyan)}
     .terminal-line{margin-top:8px;display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px}.terminal-line b{color:var(--green);font-weight:500}
     .field{padding:13px;background:radial-gradient(circle at center,#0b221a,#030a08 78%)}
     .grid{display:grid;gap:6px;position:relative}
@@ -52,7 +52,6 @@
       <div class="hint" id="settingsHint">One random column will be unlocked on every safe row.</div>
     </aside>
     <header class="top">
-      <div class="eyebrow" id="eyebrow">secure path simulator</div>
       <h1 class="title">CEDRIC <span>PRO</span></h1>
       <div class="terminal-line"><span id="statusLabel">SYSTEM: <b>READY</b></span><span>NODE_05</span></div>
     </header>
@@ -62,11 +61,11 @@
   <script>
     (()=>{
       const rows=9,cols=5,grid=document.querySelector('#grid'),scan=document.querySelector('#scan'),settingsButton=document.querySelector('#settingsButton'),settingsPanel=document.querySelector('#settingsPanel'),depth=document.querySelector('#depth'),language=document.querySelector('#language');
-      const text={en:{eyebrow:'secure path simulator',depth:'Safe rows',language:'Language',hint:'One random column will be unlocked on every safe row.',settings:'Settings',ready:'SYSTEM: <b>READY</b>',scanning:'SYSTEM: <b>SCANNING</b>',complete:'SYSTEM: <b>PATH FOUND</b>',scan:'RUN SAFE SCAN',reset:'NEW SCAN',field:'Game field'},fr:{eyebrow:'simulateur de chemin sécurisé',depth:'Lignes sûres',language:'Langue',hint:'Une colonne aléatoire sera déverrouillée sur chaque ligne sûre.',settings:'Paramètres',ready:'SYSTÈME : <b>PRÊT</b>',scanning:'SYSTÈME : <b>ANALYSE</b>',complete:'SYSTÈME : <b>CHEMIN TROUVÉ</b>',scan:'LANCER L’ANALYSE',reset:'NOUVELLE ANALYSE',field:'Champ de jeu'}};
+      const text={en:{depth:'Safe rows',language:'Language',hint:'One random column will be unlocked on every safe row.',settings:'Settings',ready:'SYSTEM: <b>READY</b>',scanning:'SYSTEM: <b>SCANNING</b>',complete:'SYSTEM: <b>PATH FOUND</b>',scan:'RUN SAFE SCAN',reset:'NEW SCAN',field:'Game field'},fr:{depth:'Lignes sûres',language:'Langue',hint:'Une colonne aléatoire sera déverrouillée sur chaque ligne sûre.',settings:'Paramètres',ready:'SYSTÈME : <b>PRÊT</b>',scanning:'SYSTÈME : <b>ANALYSE</b>',complete:'SYSTÈME : <b>CHEMIN TROUVÉ</b>',scan:'LANCER L’ANALYSE',reset:'NOUVELLE ANALYSE',field:'Champ de jeu'}};
       let revealed=false,running=false;
       const $=s=>document.querySelector(s),t=()=>text[language.value];
       function build(){grid.innerHTML=Array.from({length:rows},(_,row)=>`<div class="row" data-row="${row}">${Array.from({length:cols},(_,col)=>`<div class="cell" data-code="${String(rows-row).padStart(2,'0')}.${String(col+1).padStart(2,'0')}"></div>`).join('')}</div>`).join('');}
-      function localize(){const c=t();$('#eyebrow').textContent=c.eyebrow;$('#depthLabel').textContent=c.depth;$('#languageLabel').textContent=c.language;$('#settingsHint').textContent=c.hint;settingsButton.setAttribute('aria-label',c.settings);grid.setAttribute('aria-label',c.field);scan.textContent=revealed?c.reset:c.scan;$('#statusLabel').innerHTML=revealed?c.complete:c.ready;}
+      function localize(){const c=t();$('#depthLabel').textContent=c.depth;$('#languageLabel').textContent=c.language;$('#settingsHint').textContent=c.hint;settingsButton.setAttribute('aria-label',c.settings);grid.setAttribute('aria-label',c.field);scan.textContent=revealed?c.reset:c.scan;$('#statusLabel').innerHTML=revealed?c.complete:c.ready;}
       function reset(){revealed=false;running=false;build();scan.disabled=false;localize();}
       function reveal(){if(running)return;if(revealed){reset();return}running=true;scan.disabled=true;settingsPanel.classList.remove('open');const safe=Number(depth.value),start=rows-safe;for(let row=0;row<rows;row++){const rowEl=grid.querySelector(`[data-row="${row}"]`),delay=Math.abs(row-start)*90;if(row>=start){rowEl.classList.add('safe');rowEl.style.setProperty('--delay',`${(row-start)*100}ms`);const column=Math.floor(Math.random()*cols),cell=rowEl.children[column];cell.classList.add('apple');cell.style.setProperty('--delay',`${(row-start)*100+90}ms`);cell.innerHTML='<span class="apple-icon">🍎</span>';}else{rowEl.classList.add('blocked');rowEl.style.setProperty('--delay',`${delay+100}ms`);[...rowEl.children].forEach(cell=>cell.innerHTML='<span class="danger-x">×</span>');}}$('#statusLabel').innerHTML=t().scanning;setTimeout(()=>{revealed=true;running=false;scan.disabled=false;localize();},safe*100+550);}
       settingsButton.addEventListener('click',()=>settingsPanel.classList.toggle('open'));
