@@ -2,37 +2,80 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CEDRIC PRO</title>
-  <meta name="theme-color" content="#123c25">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>CEDRIC PRO // MATRIX</title>
+  <meta name="theme-color" content="#020806">
   <link rel="manifest" href="app.webmanifest">
   <link rel="icon" href="icon-192.png" type="image/png">
-  <style>html,body{margin:0;min-height:100%;background:radial-gradient(ellipse at 12% 10%,#5d9d42 0,transparent 28%),radial-gradient(ellipse at 88% 76%,#1a6c42 0,transparent 33%),linear-gradient(145deg,#061d17 0%,#0c4b35 48%,#173a23 100%)}body{box-sizing:border-box;padding:18px;background-attachment:fixed}</style>
+  <style>
+    :root{color-scheme:dark;--bg:#020806;--panel:#07120f;--line:#123c31;--green:#39ff88;--green-soft:#1cbf68;--cyan:#3eeaff;--danger:#ff315f;--text:#d8ffec;--muted:#75a98e}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:#020806;color:var(--text)}
+    body{padding:14px;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;background:radial-gradient(circle at 50% 20%,#0b3928 0,transparent 40%),repeating-linear-gradient(0deg,#020806 0 21px,#062017 22px),linear-gradient(135deg,#020806,#071710);background-attachment:fixed}
+    .app{width:min(100%,520px);margin:auto;position:relative;border:1px solid #1f7653;background:linear-gradient(180deg,#071710f2,#020806f7);box-shadow:0 0 0 1px #06100c,0 0 40px #00ff7733,inset 0 0 30px #00ff7712;overflow:hidden;clip-path:polygon(13px 0,100% 0,100% calc(100% - 13px),calc(100% - 13px) 100%,0 100%,0 13px)}
+    .app:before{content:"";position:absolute;inset:0;pointer-events:none;z-index:10;background:repeating-linear-gradient(0deg,transparent 0 3px,#8affbd07 4px);mix-blend-mode:screen}
+    .top{position:relative;padding:16px 16px 12px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,#06100d,#0a251a 50%,#06100d)}
+    .eyebrow{color:var(--green);font-size:10px;letter-spacing:.23em;text-transform:uppercase;margin-bottom:5px}.title{margin:0;font-size:clamp(22px,6vw,34px);letter-spacing:.12em;font-weight:700;text-shadow:0 0 14px #39ff8888}.title span{color:var(--cyan)}
+    .terminal-line{margin-top:8px;display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px}.terminal-line b{color:var(--green);font-weight:500}
+    .field{padding:13px;background:radial-gradient(circle at center,#0b221a,#030a08 78%)}
+    .grid{display:grid;gap:6px;position:relative}
+    .row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;position:relative}
+    .cell{aspect-ratio:1.32;position:relative;display:grid;place-items:center;overflow:hidden;border:1px solid #174d3b;background:linear-gradient(145deg,#0c2119,#06100d 64%);box-shadow:inset 0 0 0 1px #07110d,0 0 9px #00ff7710;clip-path:polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px)}
+    .cell:before{content:"";position:absolute;inset:5px;border:1px solid #0d2e23;background:repeating-linear-gradient(90deg,transparent 0 11px,#0f302511 12px)}
+    .cell:after{content:attr(data-code);position:absolute;left:6px;top:4px;color:#2e7058;font-size:7px;letter-spacing:.05em}
+    .row.safe{animation:row-scan .45s ease both;animation-delay:var(--delay)}
+    .row.safe .cell{border-color:#208f5d;box-shadow:inset 0 0 15px #00ff7730,0 0 10px #00ff7733}
+    .cell.apple{background:radial-gradient(circle at 50% 50%,#103c28,#07140f 70%);border-color:var(--green);animation:unlock .5s cubic-bezier(.2,.75,.25,1.25) both;animation-delay:var(--delay)}
+    .apple-icon{position:relative;z-index:2;font-family:system-ui,sans-serif;font-size:clamp(22px,6vw,38px);filter:drop-shadow(0 0 8px #ff315f);transform:translateY(2px)}
+    .row.blocked{animation:block-in .28s ease both;animation-delay:var(--delay)}
+    .row.blocked .cell{border-color:#5f1830;background:linear-gradient(145deg,#1b0b11,#090507);box-shadow:inset 0 0 15px #ff315f17}
+    .danger-x{position:relative;z-index:2;color:var(--danger);font:700 clamp(24px,7vw,42px)/1 system-ui;text-shadow:0 0 9px #ff315f;transform:rotate(-4deg)}
+    .row.blocked:after{content:"LOCKED";position:absolute;right:6px;top:50%;translate:0 -50%;z-index:3;padding:2px 4px;color:#ff8aa4;background:#1b060ddd;border:1px solid #6d1932;font-size:7px;letter-spacing:.16em}
+    @keyframes row-scan{from{opacity:.15;transform:translateX(-12px)}to{opacity:1;transform:none}}
+    @keyframes unlock{0%{opacity:0;transform:scale(.45) rotate(-9deg)}70%{transform:scale(1.12) rotate(2deg)}100%{opacity:1;transform:scale(1)}}
+    @keyframes block-in{from{opacity:0;filter:blur(3px)}to{opacity:1;filter:none}}
+    @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-delay:0ms!important}}
+    .bottom{position:relative;padding:13px 16px 15px;border-top:1px solid var(--line);background:#050d0a}
+    .action{width:100%;border:1px solid var(--green);padding:12px 16px;background:linear-gradient(90deg,#0a2b1d,#0d3b27,#0a2b1d);color:#d8ffec;font:700 13px/1 inherit;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;box-shadow:inset 0 0 18px #39ff8820,0 0 13px #39ff8833;clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)}
+    .action:hover{filter:brightness(1.17)}.action:disabled{opacity:.55;cursor:wait}
+    .gear{position:absolute;right:9px;top:9px;z-index:12;width:30px;height:30px;border:1px solid #1b5943;background:#06100dcc;color:#6fc49b;font:17px system-ui;cursor:pointer;clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px)}
+    .settings{display:none;position:absolute;right:42px;top:9px;z-index:11;width:min(270px,calc(100% - 58px));padding:12px;border:1px solid #23865d;background:#06100df2;box-shadow:0 12px 30px #000,inset 0 0 22px #00ff7710}.settings.open{display:grid;gap:10px}.settings label{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;color:#9bd5b6;font-size:10px;letter-spacing:.1em;text-transform:uppercase}.settings select{border:1px solid #217550;background:#071710;color:var(--text);padding:6px 8px;font:11px inherit}.hint{color:#4f8a6b;font-size:8px;line-height:1.45;letter-spacing:.05em}
+    @media(max-width:420px){body{padding:6px}.top{padding:13px 12px 10px}.field{padding:9px}.grid,.row{gap:4px}.bottom{padding:10px 12px 12px}}
+  </style>
 </head>
 <body>
-<div id="fortune-board">
-  <style>
-    #fortune-board{max-width:510px;margin:auto;font-family:ui-rounded,system-ui,sans-serif;color:#fff}
-    #fortune-board .frame{overflow:hidden;border:7px solid #4d2716;border-radius:17px;background:#1c100e;box-shadow:inset 0 0 0 3px #c88945,0 16px 40px #041c10aa;position:relative}
-    #fortune-board .frame:before,#fortune-board .frame:after{content:"🌿";position:absolute;z-index:4;font-size:41px;pointer-events:none;filter:drop-shadow(1px 2px #17270d)}#fortune-board .frame:before{left:-5px;top:5px;transform:rotate(-27deg)}#fortune-board .frame:after{right:-6px;bottom:2px;transform:rotate(150deg)}
-    #fortune-board .field{padding:13px 13px 14px;background:linear-gradient(105deg,#56301e,#9b5b31 46%,#512b1b);position:relative}.field:before{content:"";position:absolute;inset:0;opacity:.22;background:repeating-linear-gradient(175deg,transparent 0 27px,#f2b47122 28px 31px);pointer-events:none}
-    #fortune-board .caption{position:relative;z-index:1;margin:-1px -1px 12px;padding:11px 8px;text-align:center;font-size:clamp(16px,4vw,22px);font-weight:500;letter-spacing:.08em;background:linear-gradient(#261917,#0e0909);border:2px solid #84502d;border-radius:8px;color:#fff;text-shadow:0 2px 2px #000}
-    #fortune-board .ladder{position:relative;display:grid;gap:5px}.row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;align-items:center;padding:2px;border-radius:6px}.row.played{background:linear-gradient(90deg,#83ec9255,#baff9855,#83ec9255);box-shadow:0 0 12px #75ff83a6}
-    #fortune-board .slot{aspect-ratio:1.48;border-radius:4px;display:grid;place-items:center;position:relative;border:2px solid #5e2c1b;background:linear-gradient(165deg,#ffd38d 0%,#d78b50 23%,#a8512c 88%);box-shadow:inset 0 3px #fff1bb8f,inset 0 -4px #5e2517a6,0 2px #301009;overflow:hidden}.slot:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(5deg,transparent 0 12px,#6f301b48 13px 15px),linear-gradient(96deg,transparent 45%,#ffe0a44d 48%,transparent 52%)}.slot:after{content:"";position:absolute;left:12%;top:18%;width:25%;height:1px;transform:rotate(-24deg);background:#6a301a99}.slot .icon{z-index:1;font-size:clamp(20px,5.5vw,36px);filter:drop-shadow(0 2px 1px #54200b)}
-    #fortune-board .apple{border-color:#2c7a17;background:radial-gradient(circle at 34% 23%,#c8ff94 0 5%,transparent 6%),linear-gradient(135deg,#75d925,#238d16 64%,#135e0e);box-shadow:inset 0 3px #d3ff9b88,inset 0 -4px #125010a8,0 2px #301009;animation:fortune-pulse .45s ease-out}@keyframes fortune-pulse{from{transform:scale(.72);opacity:.2}to{transform:scale(1);opacity:1}}
-    #fortune-board .footer{position:relative;display:flex;flex-direction:column;align-items:center;gap:9px;padding:12px 16px;background:linear-gradient(#281612,#140b0a);border-top:3px solid #84502d}.settings{display:none;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:330px;padding-top:5px}.settings.open{display:flex}.picker{display:flex;align-items:center;gap:8px;font-size:12px;color:#ffe5b4}.picker select{border:1px solid #9a623a;border-radius:6px;padding:4px 7px;background:#382017;color:#fff;font:inherit}.config{display:none;width:100%;gap:5px}.config.open{display:grid}.plan-row{display:grid;grid-template-columns:42px repeat(5,1fr);gap:5px;align-items:center}.plan-row span{font-size:10px;color:#ffe5b4}.plan-cell{aspect-ratio:1;border:1px solid #9a623a;border-radius:50%;background:#593526;cursor:pointer}.plan-cell.active{background:#84bc3d;border-color:#f0f4a1;box-shadow:0 0 8px #d8e25a99}.actions{display:flex;gap:8px;justify-content:center}.gear{position:absolute;right:12px;bottom:13px;border:0;background:transparent;color:#c59c75;font:20px system-ui;cursor:pointer}.play{border:1px solid #a77042;border-radius:7px;padding:8px 14px;background:linear-gradient(#99d85c,#4a8f32);box-shadow:inset 0 1px #e4ffb6,0 2px #26120d;color:#fff;font:500 13px inherit;cursor:pointer}.play:hover{filter:brightness(1.1)}.play.secondary{background:linear-gradient(#c0834e,#7c4126)}
-    @media(max-width:430px){body{padding:8px}#fortune-board .field{padding:10px 8px}.row{gap:4px}.ladder{gap:4px}}
-  </style>
-  <section class="frame" aria-label="Игровое поле">
-    <main class="field"><div class="caption">CEDRIC PRO</div><div class="ladder" id="ladder" aria-label="Игровое поле"></div></main>
-    <footer class="footer"><div class="actions"><button type="button" class="play secondary" id="next">Next move</button><button type="button" class="play" id="reset">New round</button></div><button type="button" class="gear" id="settings" aria-label="Settings">⚙</button><div class="settings" id="settingsPanel"><label class="picker"><span id="languageLabel">Language</span><select id="language"><option value="en">English</option><option value="fr">Français (Cameroun)</option></select></label><label class="picker"><span id="modeLabel">Mode</span><select id="mode"><option value="manual" id="manualOption">Custom field</option><option value="random" id="randomOption">Random field</option></select></label><button type="button" class="play secondary" id="config">Configure field</button><div class="config" id="configPanel" aria-label="Field configuration"></div><button type="button" class="play" id="save">Save</button></div></footer>
+  <section class="app" aria-label="CEDRIC PRO simulator">
+    <button class="gear" id="settingsButton" type="button" aria-label="Settings">⚙</button>
+    <aside class="settings" id="settingsPanel">
+      <label><span id="depthLabel">Safe rows</span><select id="depth"><option value="4">4</option><option value="5" selected>5</option></select></label>
+      <label><span id="languageLabel">Language</span><select id="language"><option value="en">English</option><option value="fr">Français</option></select></label>
+      <div class="hint" id="settingsHint">One random column will be unlocked on every safe row.</div>
+    </aside>
+    <header class="top">
+      <div class="eyebrow" id="eyebrow">secure path simulator</div>
+      <h1 class="title">CEDRIC <span>PRO</span></h1>
+      <div class="terminal-line"><span id="statusLabel">SYSTEM: <b>READY</b></span><span>NODE_05</span></div>
+    </header>
+    <main class="field"><div class="grid" id="grid" aria-label="Game field"></div></main>
+    <footer class="bottom"><button class="action" id="scan" type="button">RUN SAFE SCAN</button></footer>
   </section>
   <script>
-    (()=>{const root=document.getElementById('fortune-board'),$=s=>root.querySelector(s),rows=9,plan=Array(rows).fill(null),copy={en:{language:'Language',mode:'Mode',manual:'Custom field',random:'Random field',configure:'Configure field',save:'Save',next:'Next move',round:'New round',settings:'Settings',move:'Move',cell:'cell',finish:'Finish'},fr:{language:'Langue',mode:'Mode',manual:'Champ personnalisé',random:'Champ aléatoire',configure:'Configurer le champ',save:'Enregistrer',next:'Coup suivant',round:'Nouveau tour',settings:'Paramètres',move:'Coup',cell:'case',finish:'Terminé'}};let level=rows-1,lang='en';function localize(){const t=copy[lang];$('#languageLabel').textContent=t.language;$('#modeLabel').textContent=t.mode;$('#manualOption').textContent=t.manual;$('#randomOption').textContent=t.random;$('#config').textContent=t.configure;$('#save').textContent=t.save;$('#next').textContent=level<0?t.finish:t.next;$('#reset').textContent=t.round;$('#settings').setAttribute('aria-label',t.settings);}function build(){$('#ladder').innerHTML=Array.from({length:rows},(_,i)=>'<div class="row" data-level="'+i+'">'+Array.from({length:5},()=>'<div class="slot"></div>').join('')+'</div>').join('');}function renderConfig(){const t=copy[lang];$('#configPanel').innerHTML=plan.map((column,row)=>'<div class="plan-row"><span>'+t.move+' '+(rows-row)+'</span>'+Array.from({length:5},(_,col)=>'<button type="button" class="plan-cell '+(column===col?'active':'')+'" data-row="'+row+'" data-col="'+col+'" aria-label="'+t.move+' '+(rows-row)+', '+t.cell+' '+(col+1)+'"></button>').join('')+'</div>').join('');}function reset(){level=rows-1;build();$('#next').disabled=false;localize();}function next(){if(level<0)return;const shownLevel=level,row=root.querySelector('.row[data-level="'+shownLevel+'"]'),cells=[...row.querySelectorAll('.slot')],column=$('#mode').value==='random'||plan[shownLevel]===null?Math.floor(Math.random()*cells.length):plan[shownLevel],cell=cells[column];row.classList.add('played');cell.classList.add('apple');cell.innerHTML='<span class="icon">🍎</span>';level--;if(level<0){$('#next').textContent=copy[lang].finish;$('#next').disabled=true;}}$('#settings').onclick=()=>{$('#settingsPanel').classList.toggle('open');};$('#config').onclick=()=>{const panel=$('#configPanel'),open=panel.classList.toggle('open');if(open)renderConfig();};$('#configPanel').onclick=event=>{const button=event.target.closest('button[data-row]');if(!button)return;plan[+button.dataset.row]=+button.dataset.col;renderConfig();};$('#save').onclick=()=>{$('#configPanel').classList.remove('open');$('#settingsPanel').classList.remove('open');};$('#language').onchange=event=>{lang=event.target.value;localize();if($('#configPanel').classList.contains('open'))renderConfig();};$('#next').onclick=next;$('#reset').onclick=reset;localize();reset();})();
+    (()=>{
+      const rows=9,cols=5,grid=document.querySelector('#grid'),scan=document.querySelector('#scan'),settingsButton=document.querySelector('#settingsButton'),settingsPanel=document.querySelector('#settingsPanel'),depth=document.querySelector('#depth'),language=document.querySelector('#language');
+      const text={en:{eyebrow:'secure path simulator',depth:'Safe rows',language:'Language',hint:'One random column will be unlocked on every safe row.',settings:'Settings',ready:'SYSTEM: <b>READY</b>',scanning:'SYSTEM: <b>SCANNING</b>',complete:'SYSTEM: <b>PATH FOUND</b>',scan:'RUN SAFE SCAN',reset:'NEW SCAN',field:'Game field'},fr:{eyebrow:'simulateur de chemin sécurisé',depth:'Lignes sûres',language:'Langue',hint:'Une colonne aléatoire sera déverrouillée sur chaque ligne sûre.',settings:'Paramètres',ready:'SYSTÈME : <b>PRÊT</b>',scanning:'SYSTÈME : <b>ANALYSE</b>',complete:'SYSTÈME : <b>CHEMIN TROUVÉ</b>',scan:'LANCER L’ANALYSE',reset:'NOUVELLE ANALYSE',field:'Champ de jeu'}};
+      let revealed=false,running=false;
+      const $=s=>document.querySelector(s),t=()=>text[language.value];
+      function build(){grid.innerHTML=Array.from({length:rows},(_,row)=>`<div class="row" data-row="${row}">${Array.from({length:cols},(_,col)=>`<div class="cell" data-code="${String(rows-row).padStart(2,'0')}.${String(col+1).padStart(2,'0')}"></div>`).join('')}</div>`).join('');}
+      function localize(){const c=t();$('#eyebrow').textContent=c.eyebrow;$('#depthLabel').textContent=c.depth;$('#languageLabel').textContent=c.language;$('#settingsHint').textContent=c.hint;settingsButton.setAttribute('aria-label',c.settings);grid.setAttribute('aria-label',c.field);scan.textContent=revealed?c.reset:c.scan;$('#statusLabel').innerHTML=revealed?c.complete:c.ready;}
+      function reset(){revealed=false;running=false;build();scan.disabled=false;localize();}
+      function reveal(){if(running)return;if(revealed){reset();return}running=true;scan.disabled=true;settingsPanel.classList.remove('open');const safe=Number(depth.value),start=rows-safe;for(let row=0;row<rows;row++){const rowEl=grid.querySelector(`[data-row="${row}"]`),delay=Math.abs(row-start)*90;if(row>=start){rowEl.classList.add('safe');rowEl.style.setProperty('--delay',`${(row-start)*100}ms`);const column=Math.floor(Math.random()*cols),cell=rowEl.children[column];cell.classList.add('apple');cell.style.setProperty('--delay',`${(row-start)*100+90}ms`);cell.innerHTML='<span class="apple-icon">🍎</span>';}else{rowEl.classList.add('blocked');rowEl.style.setProperty('--delay',`${delay+100}ms`);[...rowEl.children].forEach(cell=>cell.innerHTML='<span class="danger-x">×</span>');}}$('#statusLabel').innerHTML=t().scanning;setTimeout(()=>{revealed=true;running=false;scan.disabled=false;localize();},safe*100+550);}
+      settingsButton.addEventListener('click',()=>settingsPanel.classList.toggle('open'));
+      language.addEventListener('change',localize);
+      depth.addEventListener('change',()=>{if(revealed)reset()});
+      scan.addEventListener('click',reveal);
+      build();localize();
+      if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js');
+    })();
   </script>
-  <script>
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
-  </script>
-</div>
 </body>
 </html>
